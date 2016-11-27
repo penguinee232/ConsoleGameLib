@@ -8,7 +8,7 @@ namespace ConsoleGameLib.PhysicsTypes
 {
     public static class PhysicsExtensions
     {
-        public static bool ContainsPoint(this List<PhysicsPoint> points, Point point, bool mustInteractWithEnvironment = true)
+        public static bool ContainsPoint(this IEnumerable<PhysicsPoint> points, Point point, bool mustInteractWithEnvironment = true)
         {
             foreach(PhysicsPoint entry in points)
             {
@@ -20,9 +20,9 @@ namespace ConsoleGameLib.PhysicsTypes
             return false;
         }
 
-        public static Point BottomLeft(this List<PhysicsPoint> points)
+        public static Point BottomLeft(this IEnumerable<PhysicsPoint> points)
         {
-            Point lowest = points[0].Position;
+            Point lowest = new Point(int.MaxValue,int.MaxValue);
 
             foreach(PhysicsPoint point in points)
             {
@@ -38,9 +38,9 @@ namespace ConsoleGameLib.PhysicsTypes
             return lowest;
         }
 
-        public static Point TopRight(this List<PhysicsPoint> points)
+        public static Point TopRight(this IEnumerable<PhysicsPoint> points)
         {
-            Point highest = points[0].Position;
+            Point highest = new Point(int.MinValue,int.MinValue);
 
             foreach (PhysicsPoint point in points)
             {
