@@ -56,6 +56,7 @@
     <Compile Include="CoreTypes\Size.cs" />
     <Compile Include="Helpers\GameState.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="PhysicsTypes\ObjectPoint.cs" />
     <Compile Include="PhysicsTypes\PhysicsExtensions.cs" />
     <Compile Include="PhysicsTypes\PhysicsObject.cs" />
     <Compile Include="PhysicsTypes\PhysicsPoint.cs" />

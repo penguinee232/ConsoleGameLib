@@ -25,14 +25,11 @@ namespace ConsoleGameLib
 
         public UserControlledPoint UserPoint = null;
 
-        //public Camera PhysicsCamera = new Camera();
+        
 
 
 
-        [Obsolete]
-        public int ScreenHeight = 20;
-        [Obsolete]
-        public int ScreenWidth = 40;
+        
 
         private Size screenSize;
 

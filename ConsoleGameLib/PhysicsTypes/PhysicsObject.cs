@@ -12,11 +12,47 @@ namespace ConsoleGameLib.PhysicsTypes
     /// </summary>
     public class PhysicsObject
     {
-        public List<PhysicsPoint> Contents = new List<PhysicsPoint>();
+        public List<ObjectPoint> ContainedPoints
+        {
+            get
+            {
+                return Contents;
+            }
+            set
+            {
+                Contents = value;
+                foreach (ObjectPoint point in Contents)
+                {
+                    point.Object = this;
+                }
+            }
+        }
+
+
+
+
+        List<ObjectPoint> Contents = new List<ObjectPoint>();
+
+
+
+
+        public Point Velocity;
+
+
+        public int Mass;
+
+
+        public Point Momentum
+        {
+            get { return Velocity * Mass; }
+        }
+
+
+        private List<ObjectPoint> exteriorPoints = new List<ObjectPoint>();
 
         public PhysicsWorld World;
 
-        public Point Velocity;
+
 
         public bool ObeysGravity = false;
 
@@ -25,10 +61,23 @@ namespace ConsoleGameLib.PhysicsTypes
         /// </summary>
         public bool Unified = true;
 
+        /// <summary>
+        /// Work in progress
+        /// </summary>
+        /// <param name="collidingVel">The velocity with which the colliding object impacted</param>
+        /// <param name="collidingMass">The mass of the colliding object</param>
+        /// <param name="bounciness">Not currently in use</param>
+        public void Collision(Point collidingVel, int collidingMass, float bounciness)
+        {
+            Velocity += (collidingVel * collidingMass) / Mass;
+        }
 
-        public bool InteractsWithEnvironment = false;
 
-        public PhysicsObject()
+
+
+        public bool InteractsWithEnvironment = true;
+
+        public PhysicsObject(bool obeysGravity, bool obeysDrag, bool interactsWithEnvironment)
         {
 
         }
@@ -37,58 +86,55 @@ namespace ConsoleGameLib.PhysicsTypes
         {
             if (Unified)
             {
+
                 bool hitsFloor = false;
                 bool hitsLeft = false;
                 bool hitsRight = false;
                 bool hitsTop = false;
                 Point bottomLeft = Contents.BottomLeft();
                 Point topRight = Contents.TopRight();
-                foreach (PhysicsPoint point in Contents)
+                exteriorPoints = (List<ObjectPoint>)Contents.ExteriorPoints();
+
+
+                foreach (ObjectPoint point in Contents)
                 {
-                    if(InteractsWithEnvironment && point.Position.Y == bottomLeft.Y && World.Contents.ContainsPoint(new Point(point.Position.X,point.Position.Y - 1)))
+                    if (InteractsWithEnvironment && exteriorPoints.Contains(point) && World.Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1)))
                     {
                         hitsFloor = true;
                     }
-                    if (InteractsWithEnvironment && point.Position.Y == topRight.Y && World.Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1)))
+                    if (InteractsWithEnvironment && exteriorPoints.Contains(point) && World.Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1)))
                     {
                         hitsTop = true;
                     }
-                    if (InteractsWithEnvironment && point.Position.Y == bottomLeft.Y && World.Contents.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y)))
+                    if (InteractsWithEnvironment && exteriorPoints.Contains(point) && World.Contents.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y)))
                     {
                         hitsLeft = true;
                     }
-                    if (InteractsWithEnvironment && point.Position.Y == topRight.Y && World.Contents.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y)))
+                    if (InteractsWithEnvironment && exteriorPoints.Contains(point) && World.Contents.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y)))
                     {
                         hitsRight = true;
                     }
                 }
 
 
-                foreach (PhysicsPoint point in Contents)
-                {
-                    if (hitsTop || hitsFloor)
-                    {
-                        point.Velocity.Y = 0;
-                    }
-                    if(hitsLeft || hitsRight)
-                    {
-                        point.Velocity.X = 0;
-                    }
-                }
-                
+
+
+
+
+
             }
             else
             {
-                foreach (PhysicsPoint point in Contents)
-                {
-                    point.Update();
-                }
+                //foreach (PhysicsPoint point in Contents)
+                //{
+                //    point.Update();
+                //}
             }
         }
 
         public void Draw()
         {
-            foreach(PhysicsPoint point in Contents)
+            foreach (ObjectPoint point in Contents)
             {
                 point.Draw();
             }
