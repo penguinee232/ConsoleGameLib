@@ -10,11 +10,14 @@ namespace ConsoleGameLib.PhysicsTypes
     {
         public static bool ContainsPoint(this IEnumerable<PhysicsPoint> points, Point point, bool mustInteractWithEnvironment = true)
         {
-            foreach(PhysicsPoint entry in points)
+            if (points != null)
             {
-                if(entry.Position == point && (mustInteractWithEnvironment ? entry.InteractsWithEnvironment : true))
+                foreach (PhysicsPoint entry in points)
                 {
-                    return true;
+                    if (entry.Position == point && (mustInteractWithEnvironment ? entry.InteractsWithEnvironment : true))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

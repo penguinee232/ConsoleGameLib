@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePong", "ConsolePong\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsPlatformer", "PhysicsPlatformer\PhysicsPlatformer.csproj", "{344CCEED-00A2-4244-A6A7-222B5139117D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsSpaceShooter", "PhysicsBrickBreaker\PhysicsSpaceShooter.csproj", "{214EA030-B2C6-42FC-9674-2A98FA5FC91B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,14 @@ Global
 		{344CCEED-00A2-4244-A6A7-222B5139117D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{344CCEED-00A2-4244-A6A7-222B5139117D}.Release|x86.ActiveCfg = Release|Any CPU
 		{344CCEED-00A2-4244-A6A7-222B5139117D}.Release|x86.Build.0 = Release|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Debug|x86.Build.0 = Debug|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Release|x86.ActiveCfg = Release|Any CPU
+		{214EA030-B2C6-42FC-9674-2A98FA5FC91B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

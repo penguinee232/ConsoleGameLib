@@ -79,7 +79,7 @@ namespace ConsoleGameLib.PhysicsTypes
 
         public PhysicsObject(bool obeysGravity, bool obeysDrag, bool interactsWithEnvironment)
         {
-
+            
         }
 
         public void Update()

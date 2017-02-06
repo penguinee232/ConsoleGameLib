@@ -103,18 +103,23 @@ namespace ConsoleGameLib
         {
             currentGravUpdate++;
             currentDragUpdate++;
-            foreach (PhysicsPoint point in points)
+            if (points != null)
             {
-                point.World = this;
-                point.Update();
-                if (point.ObeysGravity)
+                foreach (PhysicsPoint point in points)
                 {
-                    
+                    point.World = this;
+                    point.Update();
+                    if (point.ObeysGravity)
+                    {
+
+                    }
                 }
             }
-            UserPoint.World = this;
-            UserPoint.Update();
-
+            if (UserPoint != null)
+            {
+                UserPoint.World = this;
+                UserPoint.Update();
+            }
             while(Console.KeyAvailable)
             {
                 Console.ReadKey(true);
@@ -133,18 +138,22 @@ namespace ConsoleGameLib
         public void Draw()
         {
             Console.Clear();
-            foreach (PhysicsPoint point in points)
+            if (points != null)
             {
-                //PhysicsPoint point = pt;
-                //point.Position = new Point(point.Position.X - PhysicsCamera.DrawReferencePosition.X, point.Position.Y - PhysicsCamera.DrawReferencePosition.Y);
-                if (point.Position.X >= 0 && point.Position.X <= ScreenSize.Width && point.Position.Y > 0 && point.Position.Y <= ScreenSize.Height)
+                foreach (PhysicsPoint point in points)
                 {
-                    point.Draw();
+                    //PhysicsPoint point = pt;
+                    //point.Position = new Point(point.Position.X - PhysicsCamera.DrawReferencePosition.X, point.Position.Y - PhysicsCamera.DrawReferencePosition.Y);
+                    if (point.Position.X >= 0 && point.Position.X <= ScreenSize.Width && point.Position.Y > 0 && point.Position.Y <= ScreenSize.Height)
+                    {
+                        point.Draw();
+                    }
                 }
             }
             //UserControlledPoint userPoint = UserPoint;
             //userPoint.Position = new Point(userPoint.Position.X - PhysicsCamera.DrawReferencePosition.X, userPoint.Position.Y - PhysicsCamera.DrawReferencePosition.Y);
-            if (UserPoint.Position.X >= 0 && UserPoint.Position.X <= ScreenSize.Width && UserPoint.Position.Y > 0 && UserPoint.Position.Y <= ScreenSize.Height)
+            
+            if (UserPoint != null && UserPoint.Position.X >= 0 && UserPoint.Position.X <= ScreenSize.Width && UserPoint.Position.Y > 0 && UserPoint.Position.Y <= ScreenSize.Height)
             {
                 UserPoint.Draw();
             }
