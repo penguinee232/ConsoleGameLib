@@ -15,6 +15,7 @@ namespace ConsoleGameLib.PhysicsTypes
         public ConsoleColor Color;
 
 
+        public Point RelativePosition;
         public PhysicsObject Object;
 
         

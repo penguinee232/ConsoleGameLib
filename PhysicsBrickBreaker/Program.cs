@@ -40,7 +40,7 @@ namespace PhysicsBrickBreaker
                     if((int)key >= (int)ConsoleKey.NumPad0 && (int)key <= (int)ConsoleKey.NumPad9)
                     {
                         int val = (int)key - (int)ConsoleKey.NumPad0;
-                        Point pos = new Point((val + 1) / 3 - 2);
+                       // Point pos = new Point(val % 4);
                         lasers.Add(new PhysicsPoint(false, user.Position + new Point(-1, -1), true, ConsoleColor.Red, world));
                         lasers[lasers.Count - 1].Velocity = new Point(-1, -1);
                     }
