@@ -13,16 +13,21 @@ namespace PhysicsPlatformer
 {
     class Program
     {
-
+       static PhysicsObject userObj;
         static void Main(string[] args)
         {
             //Create objects and make cursor invisible
             PhysicsWorld world = new PhysicsWorld();
-            List<PhysicsPoint> points = new List<PhysicsPoint>();
+            List<PhysicsObject> objects = new List<PhysicsObject>();
 
             Console.CursorVisible = false;
 
 
+            userObj = new PhysicsObject(true, true, true);
+            userObj.ContainedPoints.Add(new ObjectPoint(ConsoleColor.Blue, new Point(0,0),userObj));
+            userObj.Position = new Point(0, 36);
+
+            objects.Add(userObj);
             //Set world parameters.
 
             //Perform gravity calculations every 1 update.
@@ -31,49 +36,34 @@ namespace PhysicsPlatformer
 
             //Every GravityCalculationInterval updates, remove 1 from each gravity-obeying point's y velocity. 
             world.GravitationalAcceleration = 1;
-            
 
 
-            //Perform x-velocity drag calculations every 1 update.
-            world.LinearDragCalculationInterval = 1;
+            world.Drag = 1.5f;
+
+            //Perform drag calculations every 3 updates.
+            world.DragCalculationInterval = 1;
 
             //Define the point that the user controls. This one obeys gravity, interacts with the environment, and is blue.
-            UserControlledPoint userPoint = new UserControlledPoint(true,new Point(0,36),true,ConsoleColor.Blue,world);
-
-            //Pressing buttons doesn't automatically move the point. We'll do our own calculations.
-            userPoint.UpDistance = 0;
-            userPoint.RightDistance = 0;
-            userPoint.LeftDistance = 0;
-
-            //Define the functions that trigger when we press the movement keys.
-            userPoint.OnLegalRight += UserPoint_OnLegalRight;
-
-            userPoint.OnLegalLeft += UserPoint_OnLegalLeft;
-
-
-            userPoint.OnLegalUp += UserPoint_OnLegalUp;
-
-            
-
-            //Set the move-up key to be spacebar.
-            userPoint.MoveUpKey = ConsoleKey.Spacebar;
-
-            //The user can't move down.
-            userPoint.CanMoveDown = false;
+            UserControl control = new UserControl();
+            world.Control = control;
+            control.KeyPress += Control_KeyPress;
 
             Random rand = new Random();
 
             //Create a platform on which the player starts
+
+            List<ObjectPoint> points = new List<ObjectPoint>();
+            PhysicsObject obstacles = new PhysicsObject(false, false, true);
             for (int i = 0; i < 15; i++)
             {
-                points.Add(new PhysicsPoint(false,new Point(i,35),true,ConsoleColor.Green,world));
+                points.Add(new ObjectPoint(ConsoleColor.Green, new Point(i,35),obstacles));
             }
 
 
             //Create a placeholder, manipulatable location
-            Point tempPos = new Point(15,35);
+            Point tempPos = new Point(15, 35);
 
-            
+
             for (int j = 0; j < 10; j++)
             {
                 //Generate 10 platforms of random length, defined by moving around tempPos
@@ -84,62 +74,63 @@ namespace PhysicsPlatformer
 
                 for (int i = 0; i < length; i++)
                 {
-                    points.Add(new PhysicsPoint(false, new Point(tempPos.X, tempPos.Y), true, ConsoleColor.Green, world));
+                    points.Add(new ObjectPoint(ConsoleColor.Green, tempPos, obstacles));
                     tempPos.X++;
                 }
             }
-            
+
+            obstacles.Position = new Point(0, 0);
+            obstacles.ContainedPoints = points;
+
+            objects.Add(obstacles);
+
             //Set world points to the points we just defined
-            world.UserPoint = userPoint;
-            world.Contents = points;
+            
+            world.Objects = objects;
 
             //Perform operations forever
-            while(true)
+            while (true)
             {
-                
-                
+
+
                 //Update and draw the world
                 world.Update();
 
                 world.Draw();
 
                 //If the player has fallen, reset their position
-                if (userPoint.Position.Y <= 10)
+                if (userObj.Position.Y <= 10)
                 {
-                    userPoint.Position = new Point(0,36);
+                    userObj.Position = new Point(0, 36);
                 }
 
 
                 //Wait 50 ms before the next update
                 Thread.Sleep(50);
 
-                
+
 
 
             }
 
         }
 
-        private static void UserPoint_OnLegalLeft(object sender, EventArgs e)
+        private static void Control_KeyPress(object sender, KeyPressArgs e)
         {
-            //When pressing the left movement key, accelerate the point to the left.
-            ((UserControlledPoint)sender).Velocity.X-= 1;
-        }
-
-        private static void UserPoint_OnLegalRight(object sender, EventArgs e)
-        {
-            //When pressing the right movement key, accelerate the point to the right.
-            ((UserControlledPoint)sender).Velocity.X+= 1;
-        }
-
-        private static void UserPoint_OnLegalUp(object sender, EventArgs e)
-        {
-            //When pressing the up key and the point is resting on an object, hurl the point into the air.
-            UserControlledPoint sendPoint = (UserControlledPoint)sender;
-            if (sendPoint.World.Contents.ContainsPoint(new Point(sendPoint.Position.X, sendPoint.Position.Y - 1)) && sendPoint.Velocity.Y == 0)
+            if (e.Key.KeyChar == ' ')
             {
-                sendPoint.Velocity.Y += 3;
+                userObj.Velocity.Y += 3;
+            }
+            if (e.Key.KeyChar == 'a')
+            {
+                userObj.Velocity.X += -1;
+            }
+            if (e.Key.KeyChar == 'd')
+            {
+                userObj.Velocity.X += 1;
             }
         }
+
+        
     }
 }

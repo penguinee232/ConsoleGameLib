@@ -19,7 +19,12 @@ namespace ConsoleGameLib.PhysicsTypes
         public PhysicsObject Object;
 
         
-
+        public ObjectPoint(ConsoleColor color, Point relativePos, PhysicsObject obj)
+        {
+            Color = color;
+            RelativePosition = relativePos;
+            Object = obj;
+        }
 
 
         public void Draw()

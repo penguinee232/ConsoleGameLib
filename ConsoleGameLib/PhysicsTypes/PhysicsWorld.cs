@@ -12,8 +12,17 @@ namespace ConsoleGameLib
     {
         private List<PhysicsPoint> points;
 
+       
 
-               
+        private List<PhysicsObject> objects = new List<PhysicsObject>();
+
+        public List<PhysicsObject> Objects
+        {
+            get { return objects; }
+            set { objects = value; }
+        }
+
+
 
 
         public List<PhysicsPoint> Contents
@@ -25,7 +34,7 @@ namespace ConsoleGameLib
 
         public UserControlledPoint UserPoint = null;
 
-        
+        public UserControl Control = null;
 
 
 
@@ -39,14 +48,14 @@ namespace ConsoleGameLib
         public int GravityCalculationInterval = 1;
 
         /// <summary>
-        /// Linear drag in the X direction.
+        /// Every time drag is calculated, each PhysicsObject has its velocity divided by this value.
         /// </summary>
-        public int LinearDrag = 1;
+        public float Drag = 1;
 
         /// <summary>
         /// Updates between drag calculations. 1 or below means calculate every update.
         /// </summary>
-        public int LinearDragCalculationInterval = 1;
+        public int DragCalculationInterval = 1;
 
 
         int currentGravUpdate = 0;
@@ -62,8 +71,6 @@ namespace ConsoleGameLib
         {
             get { return currentDragUpdate; }
         }
-
-        public bool ClearKeyBufferInUpdate = true;
 
 
         public Size ScreenSize
@@ -85,9 +92,6 @@ namespace ConsoleGameLib
 
         public int GravitationalAcceleration = 1;
 
-
-        public int TerminalFallVelocity = -3;
-
         public PhysicsWorld()
             :this(new Size(Console.BufferWidth, Console.BufferHeight))
         {
@@ -103,32 +107,22 @@ namespace ConsoleGameLib
         {
             currentGravUpdate++;
             currentDragUpdate++;
-            if (points != null)
+            if (objects != null)
             {
-                foreach (PhysicsPoint point in points)
+                foreach (PhysicsObject obj in objects)
                 {
-                    point.World = this;
-                    point.Update();
-                    if (point.ObeysGravity)
-                    {
-
-                    }
+                    obj.World = this;
+                    obj.Update();
                 }
             }
-            if (UserPoint != null)
-            {
-                UserPoint.World = this;
-                UserPoint.Update();
-            }
-            while(Console.KeyAvailable)
-            {
-                Console.ReadKey(true);
-            }
+            
+            Control?.Update();
+
             if(currentGravUpdate >= GravityCalculationInterval)
             {
                 currentGravUpdate = 0;
             }
-            if (currentDragUpdate >= LinearDragCalculationInterval)
+            if (currentDragUpdate >= DragCalculationInterval)
             {
                 currentDragUpdate = 0;
             }
@@ -138,30 +132,16 @@ namespace ConsoleGameLib
         public void Draw()
         {
             Console.Clear();
-            if (points != null)
+            if (objects != null)
             {
-                foreach (PhysicsPoint point in points)
+                foreach (PhysicsObject obj in objects)
                 {
-                    //PhysicsPoint point = pt;
-                    //point.Position = new Point(point.Position.X - PhysicsCamera.DrawReferencePosition.X, point.Position.Y - PhysicsCamera.DrawReferencePosition.Y);
-                    if (point.Position.X >= 0 && point.Position.X <= ScreenSize.Width && point.Position.Y > 0 && point.Position.Y <= ScreenSize.Height)
+                    if (obj.Position.X >= 0 && obj.Position.X <= ScreenSize.Width && obj.Position.Y >= 0 && obj.Position.Y <= ScreenSize.Height)
                     {
-                        point.Draw();
+                        obj.Draw();
                     }
                 }
-            }
-            //UserControlledPoint userPoint = UserPoint;
-            //userPoint.Position = new Point(userPoint.Position.X - PhysicsCamera.DrawReferencePosition.X, userPoint.Position.Y - PhysicsCamera.DrawReferencePosition.Y);
-            
-            if (UserPoint != null && UserPoint.Position.X >= 0 && UserPoint.Position.X <= ScreenSize.Width && UserPoint.Position.Y > 0 && UserPoint.Position.Y <= ScreenSize.Height)
-            {
-                UserPoint.Draw();
-            }
-            //if (PhysicsCamera.CursorPlacementPosition.X > 0 && PhysicsCamera.CursorPlacementPosition.X <= Console.BufferWidth && PhysicsCamera.CursorPlacementPosition.Y > 0 && PhysicsCamera.CursorPlacementPosition.Y <= Console.BufferHeight)
-            //{
-            //    Console.SetCursorPosition(PhysicsCamera.CursorPlacementPosition.X, PhysicsCamera.ViewSize.Height - PhysicsCamera.CursorPlacementPosition.Y);
-            //}
-            
+            } 
         }
 
         

@@ -101,27 +101,27 @@ namespace ConsoleGameLib
                     }
                 }
             }
-            if(ObeysDrag && World.CurrentDragUpdateInCycle >= World.LinearDragCalculationInterval)
-            {
-                int velX = Velocity.X;
-                if (velX != 0)
-                {
-                    Velocity.X -= Velocity.X > 0 ? World.LinearDrag : -1 * World.LinearDrag;
-                }
-                if(velX > 0 && Velocity.X < 0)
-                {
-                    Velocity.X = (int)MathHelper.ClampMin(0,Velocity.X);
-                }
-                else if(velX < 0 && Velocity.X > 0)
-                {
-                    Velocity.X = (int)MathHelper.ClampMax(0, Velocity.X);
-                }
+            //if(ObeysDrag && World.CurrentDragUpdateInCycle >= World.DragCalculationInterval)
+            //{
+            //    int velX = Velocity.X;
+            //    if (velX != 0)
+            //    {
+            //        Velocity.X -= Velocity.X > 0 ? World.Drag : -1 * World.Drag;
+            //    }
+            //    if(velX > 0 && Velocity.X < 0)
+            //    {
+            //        Velocity.X = (int)MathHelper.ClampMin(0,Velocity.X);
+            //    }
+            //    else if(velX < 0 && Velocity.X > 0)
+            //    {
+            //        Velocity.X = (int)MathHelper.ClampMax(0, Velocity.X);
+            //    }
 
-            }
+            //}
             if (ObeysGravity && World.CurrentGravityUpdateInCycle >= World.GravityCalculationInterval)
             {
-                Velocity.Y -= Velocity.Y > World.TerminalFallVelocity ? World.GravitationalAcceleration : 0;
-                Velocity.Y = (int)MathHelper.ClampMin(World.TerminalFallVelocity,Velocity.Y);
+                //Velocity.Y -= Velocity.Y > World.TerminalFallVelocity ? World.GravitationalAcceleration : 0;
+                //Velocity.Y = (int)MathHelper.ClampMin(World.TerminalFallVelocity,Velocity.Y);
             }
             if(World.Contents.ContainsPoint(new Point(Position.X,Position.Y - 1)) && InteractsWithEnvironment)
             {
