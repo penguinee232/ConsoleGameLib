@@ -22,12 +22,23 @@ namespace ConsoleGameLib.PhysicsTypes
             }
             return false;
         }
-
         public static bool ContainsPoint(this IEnumerable<ObjectPoint> points, Point point)
         {
             foreach (ObjectPoint entry in points)
             {
                 if (entry.Position == point)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool ContainsPoint(this IEnumerable<PhysicsObject> objects, Point point)
+        {
+            foreach(PhysicsObject obj in objects)
+            {
+                if(obj.ContainedPoints.ContainsPoint(point))
                 {
                     return true;
                 }

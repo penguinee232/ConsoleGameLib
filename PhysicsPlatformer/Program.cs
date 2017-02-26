@@ -26,19 +26,22 @@ namespace PhysicsPlatformer
             userObj = new PhysicsObject(true, true, true);
             userObj.ContainedPoints.Add(new ObjectPoint(ConsoleColor.Blue, new Point(0,0),userObj));
             userObj.Position = new Point(0, 36);
+            userObj.Name = "Player";
+
+            userObj.ObeysGravity = true;
 
             objects.Add(userObj);
             //Set world parameters.
 
             //Perform gravity calculations every 1 update.
-            world.GravityCalculationInterval = 1;
+            world.GravityCalculationInterval = 2;
 
 
             //Every GravityCalculationInterval updates, remove 1 from each gravity-obeying point's y velocity. 
             world.GravitationalAcceleration = 1;
 
 
-            world.Drag = 1.5f;
+            world.Drag = 1;
 
             //Perform drag calculations every 3 updates.
             world.DragCalculationInterval = 1;
@@ -119,7 +122,7 @@ namespace PhysicsPlatformer
         {
             if (e.Key.KeyChar == ' ')
             {
-                userObj.Velocity.Y += 3;
+                userObj.Velocity.Y += 5;
             }
             if (e.Key.KeyChar == 'a')
             {

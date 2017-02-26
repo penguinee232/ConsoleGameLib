@@ -9,7 +9,7 @@ using ConsoleGameLib.Helpers;
 namespace ConsoleGameLib.PhysicsTypes
 {
 
-    
+
 
     /// <summary>
     /// Work in progress. Will allow for many points treated as one.
@@ -17,9 +17,9 @@ namespace ConsoleGameLib.PhysicsTypes
     public class PhysicsObject
     {
 
-
+        public string Name { get; set; } = "";
         public event EventHandler Contact;
-        
+
 
 
         public List<ObjectPoint> ContainedPoints
@@ -67,26 +67,33 @@ namespace ConsoleGameLib.PhysicsTypes
 
         public bool ObeysGravity = false;
 
-        
+
 
         public bool InteractsWithEnvironment = true;
 
         public PhysicsObject(bool obeysGravity, bool obeysDrag, bool interactsWithEnvironment)
         {
-
+            ObeysGravity = obeysGravity;
+            InteractsWithEnvironment = interactsWithEnvironment;
         }
 
         public void Update()
         {
-            
-                Point bottomLeft = Contents.BottomLeft();
-                Point topRight = Contents.TopRight();
-                exteriorPoints = (List<ObjectPoint>)Contents.ExteriorPoints();
-                ProcessVelocity();
-                foreach(ObjectPoint point in Contents)
-                {
-                    point.Position = point.RelativePosition + Position;
-                } 
+
+            foreach (ObjectPoint point in Contents)
+            {
+                point.Position = point.RelativePosition + Position;
+            }
+            Point bottomLeft = Contents.BottomLeft();
+            Point topRight = Contents.TopRight();
+
+            exteriorPoints = (List<ObjectPoint>)Contents.ExteriorPoints();
+            ProcessVelocity();
+            foreach (ObjectPoint point in Contents)
+            {
+                point.Position = point.RelativePosition + Position;
+            }
+
         }
 
         public void Draw()
@@ -99,7 +106,7 @@ namespace ConsoleGameLib.PhysicsTypes
 
         bool Colliding
         {
-            
+
             get { return CollidingLeft || CollidingRight || CollidingTop || CollidingBottom; }
         }
 
@@ -109,7 +116,7 @@ namespace ConsoleGameLib.PhysicsTypes
             {
                 foreach (ObjectPoint point in exteriorPoints)
                 {
-                    if (InteractsWithEnvironment && (World.Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1)) && !Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1))))
+                    if (InteractsWithEnvironment && (World.Objects.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1)) && !Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1))))
                     {
                         return true;
                     }
@@ -124,7 +131,7 @@ namespace ConsoleGameLib.PhysicsTypes
             {
                 foreach (ObjectPoint point in exteriorPoints)
                 {
-                    if (InteractsWithEnvironment && (World.Contents.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y)) && !Contents.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y))))
+                    if (InteractsWithEnvironment && (World.Objects.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y)) && !Contents.ContainsPoint(new Point(point.Position.X - 1, point.Position.Y))))
                     {
                         return true;
                     }
@@ -140,7 +147,7 @@ namespace ConsoleGameLib.PhysicsTypes
             {
                 foreach (ObjectPoint point in exteriorPoints)
                 {
-                    if (InteractsWithEnvironment && (World.Contents.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y)) && !Contents.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y))))
+                    if (InteractsWithEnvironment && (World.Objects.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y)) && !Contents.ContainsPoint(new Point(point.Position.X + 1, point.Position.Y))))
                     {
                         return true;
                     }
@@ -155,7 +162,7 @@ namespace ConsoleGameLib.PhysicsTypes
             {
                 foreach (ObjectPoint point in exteriorPoints)
                 {
-                    if (InteractsWithEnvironment && (World.Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1)) && !Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1))))
+                    if (InteractsWithEnvironment && (World.Objects.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1)) && !Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y + 1))))
                     {
                         return true;
                     }
@@ -187,10 +194,17 @@ namespace ConsoleGameLib.PhysicsTypes
                 }
                 else if (tempVel.Y < 0)
                 {
+
+                    //if (Position.Y <= 36 && Name == "Player")
+                    //{
+
+                    //}
+
                     if (CollidingBottom && InteractsWithEnvironment)
                     {
                         Contact?.Invoke(this, EventArgs.Empty);
                         tempVel.Y = 0;
+                        Velocity.Y = 0;////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                     }
                     else
@@ -230,18 +244,44 @@ namespace ConsoleGameLib.PhysicsTypes
             }
             if (ObeysGravity && World.CurrentGravityUpdateInCycle >= World.GravityCalculationInterval)
             {
-                Velocity.Y -= World.GravitationalAcceleration;
+                Velocity.Y -= Velocity.Y > World.TerminalFallVelocity ? World.GravitationalAcceleration : 0;
+                Velocity.Y = (int)MathHelper.ClampMin(World.TerminalFallVelocity, Velocity.Y);
             }
+
             if (World.CurrentDragUpdateInCycle >= World.DragCalculationInterval)
             {
-                Velocity = new Point((int)Math.Round(Velocity.X/World.Drag), (int)Math.Round(Velocity.Y/World.Drag));
+                if (Velocity.X > 0)
+                {
+                    Velocity.X -= World.Drag;
+                    Velocity.X = (int)MathHelper.ClampMin(0, Velocity.X);
+                }
+                else if (Velocity.X < 0)
+                {
 
+                    Velocity.X += World.Drag;
+                    Velocity.X = (int)MathHelper.ClampMax(0, Velocity.X);
+                }
+
+                //if (Velocity.Y > 0)
+                //{
+                //    Velocity.Y -= World.Drag;
+                //    Velocity.Y = (int)MathHelper.ClampMin(0, Velocity.Y);
+                //}
+                //else if (Velocity.Y < 0)
+                //{
+
+                //    Velocity.Y += World.Drag;
+                //    Velocity.Y = (int)MathHelper.ClampMax(0, Velocity.Y);
+                //}
+
+
+                //if (ObeysGravity && World.Drag == World.GravitationalAcceleration && Velocity.Y == 0)
+                //{
+                //    Velocity.Y -= World.GravitationalAcceleration;
+                //}
             }
-            
-            if (World.Contents.ContainsPoint(new Point(Position.X, Position.Y - 1)) && InteractsWithEnvironment)
-            {
-                Contact?.Invoke(this, EventArgs.Empty);
-            }
+
+
         }
     }
 }

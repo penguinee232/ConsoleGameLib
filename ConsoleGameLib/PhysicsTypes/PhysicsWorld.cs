@@ -50,7 +50,7 @@ namespace ConsoleGameLib
         /// <summary>
         /// Every time drag is calculated, each PhysicsObject has its velocity divided by this value.
         /// </summary>
-        public float Drag = 1;
+        public int Drag = 1;
 
         /// <summary>
         /// Updates between drag calculations. 1 or below means calculate every update.
@@ -86,9 +86,9 @@ namespace ConsoleGameLib
             }
         }
 
-        
 
 
+        public int TerminalFallVelocity = -3;
 
         public int GravitationalAcceleration = 1;
 
