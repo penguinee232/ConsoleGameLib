@@ -118,7 +118,7 @@ namespace ConsoleGameLib.PhysicsTypes
                 {
                     if (InteractsWithEnvironment && (World.Objects.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1)) && !Contents.ContainsPoint(new Point(point.Position.X, point.Position.Y - 1))))
                     {
-                        return true;
+                         return true;
                     }
 
                 }
@@ -179,6 +179,10 @@ namespace ConsoleGameLib.PhysicsTypes
             Point tempVel = Velocity;
             while (tempVel.X != 0 || tempVel.Y != 0)
             {
+                foreach (ObjectPoint point in Contents)
+                {
+                    point.Position = point.RelativePosition + Position;
+                }
                 if (tempVel.Y > 0)
                 {
                     if (!CollidingTop || !InteractsWithEnvironment)

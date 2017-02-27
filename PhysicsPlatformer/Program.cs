@@ -14,10 +14,18 @@ namespace PhysicsPlatformer
     class Program
     {
        static PhysicsObject userObj;
+
+        static PhysicsWorld world;
+
+        static Random rand;
+
+        static int jumpVel = 3;
+
+        static PhysicsObject obstacles;
         static void Main(string[] args)
         {
             //Create objects and make cursor invisible
-            PhysicsWorld world = new PhysicsWorld();
+            world = new PhysicsWorld();
             List<PhysicsObject> objects = new List<PhysicsObject>();
 
             Console.CursorVisible = false;
@@ -40,10 +48,11 @@ namespace PhysicsPlatformer
             //Every GravityCalculationInterval updates, remove 1 from each gravity-obeying point's y velocity. 
             world.GravitationalAcceleration = 1;
 
+            world.TerminalFallVelocity = -3;
 
             world.Drag = 1;
 
-            //Perform drag calculations every 3 updates.
+            //Perform drag calculations every 1 update.
             world.DragCalculationInterval = 1;
 
             //Define the point that the user controls. This one obeys gravity, interacts with the environment, and is blue.
@@ -51,12 +60,12 @@ namespace PhysicsPlatformer
             world.Control = control;
             control.KeyPress += Control_KeyPress;
 
-            Random rand = new Random();
+            rand = new Random();
 
             //Create a platform on which the player starts
 
             List<ObjectPoint> points = new List<ObjectPoint>();
-            PhysicsObject obstacles = new PhysicsObject(false, false, true);
+            obstacles = new PhysicsObject(false, false, true);
             for (int i = 0; i < 15; i++)
             {
                 points.Add(new ObjectPoint(ConsoleColor.Green, new Point(i,35),obstacles));
@@ -107,7 +116,14 @@ namespace PhysicsPlatformer
                     userObj.Position = new Point(0, 36);
                 }
 
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(0, world.ScreenSize.Height - 45);
+                Console.Write($"Effective Gravity: {(float)world.GravitationalAcceleration/world.GravityCalculationInterval}\nEffective Drag: {(float)world.Drag/world.DragCalculationInterval}\nTerminal velocity: {world.TerminalFallVelocity}\nJumping velocity: {jumpVel}");
 
+                Console.SetCursorPosition(40, world.ScreenSize.Height - 45);
+                Console.Write($"Velocity: {{{userObj.Velocity.X},{userObj.Velocity.Y}}}");
+                Console.SetCursorPosition(40, world.ScreenSize.Height - 44);
+                Console.Write($"Position: {{{userObj.Position.X},{userObj.Position.Y}}}");
                 //Wait 50 ms before the next update
                 Thread.Sleep(50);
 
@@ -120,9 +136,9 @@ namespace PhysicsPlatformer
 
         private static void Control_KeyPress(object sender, KeyPressArgs e)
         {
-            if (e.Key.KeyChar == ' ')
+            if (e.Key.KeyChar == ' ' && world.Objects.ContainsPoint(new Point(userObj.Position.X,userObj.Position.Y - 1)))
             {
-                userObj.Velocity.Y += 5;
+                userObj.Velocity.Y += jumpVel;
             }
             if (e.Key.KeyChar == 'a')
             {
@@ -131,6 +147,49 @@ namespace PhysicsPlatformer
             if (e.Key.KeyChar == 'd')
             {
                 userObj.Velocity.X += 1;
+            }
+            if(e.Key.KeyChar == 'r')
+            {
+                #region reset
+                List<ObjectPoint> points = new List<ObjectPoint>();
+                for (int i = 0; i < 15; i++)
+                {
+                    points.Add(new ObjectPoint(ConsoleColor.Green, new Point(i, 35), obstacles));
+                }
+                //Create a placeholder, manipulatable location
+                Point tempPos = new Point(15, 35);
+                
+
+                
+
+                for (int j = 0; j < 10; j++)
+                {
+                    //Generate 10 platforms of random length, defined by moving around tempPos
+                    int length = rand.Next(1, 10);
+
+                    tempPos.Y += rand.Next(0, 2);
+                    tempPos.X += rand.Next(1, 3);
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        points.Add(new ObjectPoint(ConsoleColor.Green, tempPos, obstacles));
+                        tempPos.X++;
+                    }
+                }
+
+                obstacles.Position = new Point(0, 0);
+                obstacles.ContainedPoints = points;
+                #endregion
+                userObj.Position.Y = 37;
+            }
+            if(e.Key.KeyChar == 'c')
+            {
+                world.DragCalculationInterval = rand.Next(1,7);
+                world.GravityCalculationInterval = rand.Next(1, 7);
+
+                world.TerminalFallVelocity = rand.Next(-10, -2);
+
+                jumpVel = rand.Next(2, 6);
             }
         }
 
